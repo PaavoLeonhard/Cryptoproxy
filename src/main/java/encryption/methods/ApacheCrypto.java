@@ -57,7 +57,34 @@ public class ApacheCrypto {
 	 * second String can be the algorithm(default is AES), the third can be the
 	 * padding.
 	 */
-	public int apply(Data rawData, String... args) {
+//	public Data apply(Data rawData, String... args) {
+//		SecretKeySpec key = new SecretKeySpec(getUTF8Bytes(args[0]), "AES");
+//		if (args.length == 2) {
+//			key = new SecretKeySpec(getUTF8Bytes(args[0]), args[1]);
+//		} else if (args.length > 3) {
+//			this.transform = args[2];
+//			key = new SecretKeySpec(getUTF8Bytes(args[0]), args[1]);
+//		}
+//
+//		try {
+//			CryptoCipher encipher = Utils.getCipherInstance(transform, properties);
+//			byte[] input = getUTF8Bytes(rawData.getData());
+//			byte[] output = new byte[240];
+//
+//			encipher.init(Cipher.ENCRYPT_MODE, key, iv);
+//			int updateBytes = encipher.update(input, 0, input.length, output, 0);
+//			int finalBytes = encipher.doFinal(input, 0, 0, output, updateBytes);
+//			encipher.close();
+//			rawData = new Data(Arrays.toString(Arrays.copyOf(output, updateBytes + finalBytes)));
+//			return new Data(Arrays.toString(Arrays.copyOf(output, updateBytes + finalBytes)));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	
+	
+	public String apply(byte [] input, String... args) {
 		SecretKeySpec key = new SecretKeySpec(getUTF8Bytes(args[0]), "AES");
 		if (args.length == 2) {
 			key = new SecretKeySpec(getUTF8Bytes(args[0]), args[1]);
@@ -68,18 +95,15 @@ public class ApacheCrypto {
 
 		try {
 			CryptoCipher encipher = Utils.getCipherInstance(transform, properties);
-			byte[] input = getUTF8Bytes(rawData.getData());
 			byte[] output = new byte[240];
-
 			encipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			int updateBytes = encipher.update(input, 0, input.length, output, 0);
 			int finalBytes = encipher.doFinal(input, 0, 0, output, updateBytes);
 			encipher.close();
-			rawData = new Data(Arrays.toString(Arrays.copyOf(output, updateBytes + finalBytes)));
-			return updateBytes + finalBytes;
+			return Arrays.toString(Arrays.copyOf(output, updateBytes + finalBytes));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return 0;
+			return null;
 		}
 	}
 
@@ -151,7 +175,7 @@ public class ApacheCrypto {
 	 * 73 * Converts String to UTF8 bytes 74 * 75 * @param input the input
 	 * string 76 * @return UTF8 bytes 77
 	 */
-	private static byte[] getUTF8Bytes(String input) {
+	public static byte[] getUTF8Bytes(String input) {
 		return input.getBytes(StandardCharsets.UTF_8);
 	}
 
