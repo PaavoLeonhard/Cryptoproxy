@@ -1,7 +1,8 @@
-package de.tub.ise.cryptoware.data;
+package de.tub.ise.cryptoproxy.data;
 
 /**
  * Wrapper class for a String since Spring-Boot sends data as a JSON
+ * 
  * @author Paavo.Camps
  */
 public class Data {

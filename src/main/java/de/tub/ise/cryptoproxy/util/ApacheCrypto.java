@@ -1,4 +1,5 @@
-package de.tub.ise.cryptoware.util;
+package de.tub.ise.cryptoproxy.util;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +19,6 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import de.tub.ise.cryptoware.data.Data;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.crypto.cipher.CryptoCipher;
 import org.apache.commons.crypto.stream.CryptoInputStream;
@@ -26,6 +26,8 @@ import org.apache.commons.crypto.stream.CryptoOutputStream;
 import org.apache.commons.crypto.utils.Utils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import de.tub.ise.cryptoproxy.data.Data;
 
 
 /**

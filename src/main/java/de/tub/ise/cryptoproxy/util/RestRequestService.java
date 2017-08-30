@@ -1,4 +1,4 @@
-package de.tub.ise.cryptoware.util;
+package de.tub.ise.cryptoproxy.util;
 
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Scope;

@@ -1,4 +1,4 @@
-package de.tub.ise.cryptoware.util;
+package de.tub.ise.cryptoproxy.util;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
