@@ -49,12 +49,24 @@ public class ApacheCrypto {
 		this.transform = "AES/CBC/PKCS5PADDING";
 	}
 
+	public void setTransform(String transform) {
+		this.transform = transform;
+	}
+
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
+
+	public void setIv(IvParameterSpec iv) {
+		this.iv = iv;
+	}
+
 	public String getSimpleName() {
 		return "ApacheCrypto";
 	}
 
-	
-	public String apply(byte [] input, String... args) {
+
+	public String apply(byte[] input, String... args) {
 		SecretKeySpec key = new SecretKeySpec(getUTF8Bytes(args[0]), "AES");
 		if (args.length == 2) {
 			key = new SecretKeySpec(getUTF8Bytes(args[0]), args[1]);

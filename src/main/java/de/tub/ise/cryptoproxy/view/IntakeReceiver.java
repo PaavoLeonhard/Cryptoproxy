@@ -1,5 +1,8 @@
 package de.tub.ise.cryptoproxy.view;
 
+import de.tub.ise.cryptoproxy.api.ICryptoService;
+import de.tub.ise.cryptoproxy.api.ISecureStorageService;
+import de.tub.ise.cryptoproxy.util.ApacheCryptoBuilder;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -14,18 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import de.tub.ise.cryptoproxy.util.ApacheCrypto;
-import de.tub.ise.cryptoproxy.util.IdentService;
 import de.tub.ise.cryptoproxy.util.RestRequestService;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Collectors;
 
 /**
  * 
@@ -33,22 +30,20 @@ import java.util.stream.Collectors;
  *
  */
 @RestController
-public class Receiver {
-	@Autowired
-	IdentService identService;
-
-	@Autowired
-	ApacheCrypto cryptoService;
+public class IntakeReceiver {
 
 	@Autowired
 	RestRequestService requestService;
+
+	@Autowired
+	ISecureStorageService secureStorageService;
 
 	RestTemplate restTemplate = new RestTemplate();
 
 	/**
 	 * Default constructor required by Spring
 	 */
-	public Receiver() {
+	public IntakeReceiver() {
 	}
 
 	/**
@@ -60,7 +55,7 @@ public class Receiver {
 	@RequestMapping(value = "/**", method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 			RequestMethod.DELETE, RequestMethod.OPTIONS,RequestMethod.HEAD })
 	public ResponseEntity<String> show(HttpServletRequest request, @RequestHeader("X-Server") String server,
-			@RequestHeader("X-Identity") String identity, @RequestHeader("X-IdentServer") String identServer) {
+			@RequestHeader("X-Identity") String identity) {
 
 		Response res = null;
 		try {
@@ -71,7 +66,7 @@ public class Receiver {
 
 		String encrypt = null;
 		try {
-			encrypt = encrypt(identity, identServer, res);
+			encrypt = encrypt(identity, res);
 		} catch (IOException e) {
 			return ResponseEntity.status(500).build();
 		}
@@ -89,12 +84,14 @@ public class Receiver {
 		return theader;
 	}
 
-	private String encrypt(String identity, String identServer, Response res) throws IOException {
+	private String encrypt(String identity, Response res) throws IOException {
 		byte[] raw = res.body().bytes();
 
-		String key = identService.getKeyFor(identity, identServer);
+		ICryptoService cryptoService = new ApacheCryptoBuilder()
+				.withSecret(secureStorageService.get(identity))
+				.build();
 
-		return cryptoService.apply(raw, key);
+		return cryptoService.applyAsString(raw);
 	}
 
 	private Response performProxyCall(HttpServletRequest initialRequest, String server) throws Exception {

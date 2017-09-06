@@ -5,4 +5,6 @@ public interface ISecureStorageService {
 	public String put(byte[] aesKey, long ttl);
 	
     public byte [] get(String sID);
+
+    void invalidate(String sid);
 }
